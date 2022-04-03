@@ -1,0 +1,13 @@
+{
+  "configurations": {
+    "Launch": {
+      "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ], // optional
+      "configuration": {
+        "request": "launch",
+        "program": "/home/thetu/Yang/code/CPP/asyncLoger/debug/src/logstream",
+        "stopAtEntry": true
+      }
+    }
+  }
+}

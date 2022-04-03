@@ -36,7 +36,7 @@ public:
   Logging();
   void append(const string &);
   void output();
-  inline void changeLevel(const LogLevel &lev) { level = lev; }
+  // inline void changeLevel(const LogLevel &lev) { level = lev; }
   void closeRun() { running_ = false; }
 
 private:
@@ -58,10 +58,12 @@ private:
   bool running_{true};
 
   //格式化数据
-private:
-  string date;
-  time_t lastModTime;
-  LogLevel level{LogLevel::INFO};
+  /*
+   *private:
+   *  string date;
+   *  time_t lastModTime;
+   *  LogLevel level{LogLevel::INFO};
+   */
 };
 } // namespace AsyncLog
 

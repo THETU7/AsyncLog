@@ -7,19 +7,21 @@ void OUTPUTLOG(Logging &log) { log.output(); }
 Logging::Logging()
     : current_(make_unique<Buffer>()), nextBuffer(make_unique<Buffer>()),
       buffers_(make_unique<BufferVector>()) {
-  lastModTime = chrono::system_clock::to_time_t(chrono::system_clock::now());
-  getTimeStr();
+  // lastModTime = chrono::system_clock::to_time_t(chrono::system_clock::now());
+  // getTimeStr();
   thread t1(OUTPUTLOG, std::ref(*this));
   t1.detach();
 }
 
-void Logging::getTimeStr() {
-  char timebuf[32];
-  if (strftime(timebuf, 32, "%F %T", localtime(&lastModTime)) == 0) {
-    cerr << "time buffer size 16 is too small\n" << endl;
-  }
-  date = timebuf;
-}
+/*
+ *void Logging::getTimeStr() {
+ *  char timebuf[32];
+ *  if (strftime(timebuf, 32, "%F %T", localtime(&lastModTime)) == 0) {
+ *    cerr << "time buffer size 16 is too small\n" << endl;
+ *  }
+ *  date = timebuf;
+ *}
+ */
 
 void Logging::append(const string &str) {
   // lock_guard<mutex> lock(mutex_);

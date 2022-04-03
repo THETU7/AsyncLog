@@ -12,5 +12,6 @@ AsyncLog 是一款支持多线程的高性能日志库。
 ```shell
 mkdir build
 cd build 
+cmake ..
 make
 ```

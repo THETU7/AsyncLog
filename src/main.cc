@@ -46,16 +46,22 @@ int main() {
    *t2.join();
    */
 
+  AsyncLog::LogStream::setOutput(AsyncLog::ASYNCLOGOUT);
   std::thread t1(thr1);
-  std::thread t2(thr2);
-  std::thread t3(thr3);
-  /*std::thread t4(thr4);*/
-
+  /*
+   *  std::thread t2(thr2);
+   *  std::thread t3(thr3);
+   *  std::thread t4(thr4);
+   *
+   */
   t1.join();
-  t2.join();
-  t3.join();
-  /*t4.join();*/
-
-  exit(0);
-  // return 0;
+  /*
+   *  t2.join();
+   *  t3.join();
+   *  t4.join();
+   *
+   */
+  // exit(0);
+  //
+  return 0;
 }

@@ -23,22 +23,25 @@ Logging::Logging()
 void Logging::append(const string &str) {
   // lock_guard<mutex> lock(mutex_);
 
-  lock_guard<mutex> lcok(mutex_);
-  if (str.length() <= current_->availbe())
-    current_->append(str);
-  else {
-    buffers_->push_back(std::move(current_));
-
-    if (nextBuffer.get()) {
-      current_ = std::move(nextBuffer);
-    } else {
-      current_.reset(new Buffer);
-    }
-    current_->append(str);
-    // cout << str << endl;
-    // lcok.unlock();
-    cond.notify_one();
-  }
+  append(str.c_str(), str.length());
+  /*
+   *  lock_guard<mutex> lcok(mutex_);
+   *  if (str.length() <= current_->availbe())
+   *    current_->append(str);
+   *  else {
+   *    buffers_->push_back(std::move(current_));
+   *
+   *    if (nextBuffer.get()) {
+   *      current_ = std::move(nextBuffer);
+   *    } else {
+   *      current_.reset(new Buffer);
+   *    }
+   *    current_->append(str);
+   *    // cout << str << endl;
+   *    // lcok.unlock();
+   *    cond.notify_one();
+   *  }
+   */
   /*
    *  else if (str.length() <= nextBuffer->availbe()) {
    *    buffers_->push_back(std::move(current_));
@@ -52,6 +55,27 @@ void Logging::append(const string &str) {
    *    current_->append(str.c_str(), str.length());
    *  }
    */
+}
+
+void Logging::append(const char *msg, size_t len) {
+  if (!msg)
+    return;
+  lock_guard<mutex> lcok(mutex_);
+  if (len <= current_->availbe())
+    current_->append(msg, len);
+  else {
+    buffers_->push_back(std::move(current_));
+
+    if (nextBuffer.get()) {
+      current_ = std::move(nextBuffer);
+    } else {
+      current_.reset(new Buffer);
+    }
+    current_->append(msg, len);
+    // cout << str << endl;
+    // lcok.unlock();
+    cond.notify_one();
+  }
 }
 
 void Logging::output() {
@@ -108,5 +132,13 @@ void Logging::output() {
   }
   file.flush();
 }
+
+void ASYNCLOGOUT(const char *msg, size_t len) {
+  if (!GLOABLASYNCLOG)
+    GLOABLASYNCLOG.reset(new Logging);
+  GLOABLASYNCLOG->append(msg, len);
+}
+
+unique_ptr<Logging> GLOABLASYNCLOG = nullptr;
 
 } // namespace AsyncLog

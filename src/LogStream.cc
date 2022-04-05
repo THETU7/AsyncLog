@@ -1,4 +1,5 @@
 #include "src/LogStream.h"
+#include <cstdio>
 #include <iomanip>
 
 namespace AsyncLog {
@@ -27,7 +28,9 @@ void LogStream::format(const string &str) {
   ss << '\t' << fid << '\t';
   ss << str << '\t' << filename_ << ':' << line_ << '\n';
   // buffer_.append(ss.str());
-  logging_.append(ss.str());
+  string strs = ss.str();
+  g_output(strs.c_str(), strs.length());
+  // logging_.append(ss.str());
 }
 
 const string LogStream::getLevel() {
@@ -46,10 +49,21 @@ const string LogStream::getLevel() {
     return "WARN";
   case LogLevel::NUM_LOG_LEVELS:
     return "OTHRE";
+  default:
+    return "";
   }
 }
 
-Logging LogStream::logging_{};
+// Logging LogStream::logging_{};
 LogLevel LogStream::level = LogLevel::INFO;
+OUTPUTFUN LogStream::g_output = defalutOutPutFunction;
+FLUSHFUN LogStream::g_flush = defalutFlushFunction;
+
+void defalutOutPutFunction(const char *msg, size_t len) {
+  size_t n = fwrite(msg, 1, len, stdout);
+  (void)n;
+}
+
+void defalutFlushFunction() { fflush(stdout); }
 
 } // namespace AsyncLog

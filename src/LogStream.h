@@ -12,12 +12,18 @@
 
 #include "src/Logging.h"
 #include "src/buffer.h"
+#include <cstdlib>
 #include <thread>
 
 //#define LOGINFO OUTPUTLOG(__FILE__, __LINE__)
 
 namespace AsyncLog {
 
+using OUTPUTFUN = void (*)(const char *msg, size_t len);
+using FLUSHFUN = void (*)();
+
+void defalutOutPutFunction(const char *msg, size_t len);
+void defalutFlushFunction();
 // void RUNLOGGING(Logging &ref);
 class LogStream {
   using self = LogStream;
@@ -38,7 +44,12 @@ public:
     return *this;
   }
 
-  ~LogStream() { format(buffer_.outputToString()); }
+  ~LogStream() {
+    format(buffer_.outputToString());
+    if (current_level == LogLevel::FATAL) {
+      abort();
+    }
+  }
 
   self &operator<<(const char *str) {
     buffer_.append(str);
@@ -48,6 +59,9 @@ public:
   self &stream() { return *this; }
 
   void format(const string &str);
+  static void setOutput(OUTPUTFUN func) { g_output = func; }
+  static void setFlush(FLUSHFUN func) { g_flush = func; }
+  static void setLogLevel(LogLevel le) { level = le; }
 
   static LogLevel level;
   /*
@@ -78,7 +92,9 @@ private:
   int line_{0};
   LogLevel current_level;
   Buffer::buffer buffer_{SMALLBUFFERSIZE};
-  static Logging logging_;
+  // static Logging logging_;
+  static OUTPUTFUN g_output;
+  static FLUSHFUN g_flush;
 };
 
 // static LogStream LOGSTREAM;

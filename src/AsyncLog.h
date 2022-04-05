@@ -30,7 +30,7 @@
 
 #define LOGERROR                                                               \
   if (AsyncLog::LogLevel::ERROR >= AsyncLog::LogStream::level)                 \
-  AsyncLog::LogStream(__FILE__, __LINE__, AsyncLog::LogLevel::DEBUG).stream()
+  AsyncLog::LogStream(__FILE__, __LINE__, AsyncLog::LogLevel::ERROR).stream()
 
 #define LOGFATAL                                                               \
   AsyncLog::LogStream(__FILE__, __LINE__, AsyncLog::LogLevel::FATAL).stream()

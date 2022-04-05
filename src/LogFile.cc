@@ -58,7 +58,7 @@ void LogFile::append(const char *buf, size_t len) {
   if (len == 0)
     return;
   rollfile();
-  os << setw(len) << buf << '\n';
+  os << setw(len) << buf;
   bytes += len;
 }
 

@@ -52,6 +52,7 @@ public:
   // inline void changeLevel(const LogLevel &lev) { level = lev; }
   void closeRun() { running_ = false; }
   void output();
+  void append(const char *msg, size_t len);
 
 private:
   void getTimeStr();
@@ -81,6 +82,11 @@ private:
    *  LogLevel level{LogLevel::INFO};
    */
 };
+
+extern unique_ptr<Logging> GLOABLASYNCLOG;
+
+void ASYNCLOGOUT(const char *msg, size_t len);
+
 } // namespace AsyncLog
 
 #endif

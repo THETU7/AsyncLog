@@ -2,15 +2,12 @@
 #include <iomanip>
 
 namespace AsyncLog {
-void OUTPUTLOG(Logging &log) { log.output(); }
 
+void OUTPUTLOG(Logging &log) { log.output(); }
 Logging::Logging()
     : current_(make_unique<Buffer>()), nextBuffer(make_unique<Buffer>()),
       buffers_(make_unique<BufferVector>()) {
-  // lastModTime = chrono::system_clock::to_time_t(chrono::system_clock::now());
-  // getTimeStr();
-  thread t1(OUTPUTLOG, std::ref(*this));
-  t1.detach();
+  thread_ = thread(OUTPUTLOG, std::ref(*this));
 }
 
 /*
@@ -25,19 +22,22 @@ Logging::Logging()
 
 void Logging::append(const string &str) {
   // lock_guard<mutex> lock(mutex_);
-  unique_lock<mutex> lcok(mutex_);
+
+  lock_guard<mutex> lcok(mutex_);
   if (str.length() <= current_->availbe())
-    current_->append(str.c_str(), str.length());
+    current_->append(str);
   else {
     buffers_->push_back(std::move(current_));
 
-    if (nextBuffer) {
+    if (nextBuffer.get()) {
       current_ = std::move(nextBuffer);
     } else {
-      current_ = make_unique<Buffer>();
+      current_.reset(new Buffer);
     }
-    current_->append(str.c_str(), str.length());
-    cond.notify_all();
+    current_->append(str);
+    // cout << str << endl;
+    // lcok.unlock();
+    cond.notify_one();
   }
   /*
    *  else if (str.length() <= nextBuffer->availbe()) {
@@ -62,19 +62,29 @@ void Logging::output() {
   while (running_) {
     {
       unique_lock<mutex> lock(mutex_);
+
       if (buffers_->empty()) {
         cond.wait_for(lock, FLUSHINTERVAL);
       }
+
+      if (current_->writedSize() == 0) {
+        continue;
+      }
+
       buffers_->push_back(std::move(current_));
-      buffersToWirte.swap(buffers_);
       current_ = std::move(bufferA);
+      buffersToWirte.swap(buffers_);
       if (!nextBuffer)
         nextBuffer = std::move(bufferB);
+      lock.unlock();
     }
     //移出缓冲区
     for (auto it = buffersToWirte->begin(); it != buffersToWirte->end(); ++it) {
-      (*it)->outputByFile(file);
+      if (*it) {
+        (*it)->outputByFile(file);
+      }
     }
+    // cout << "size:" << buffersToWirte->size() << endl;
 
     /*
      *while (buffersToWirte->empty()) {
@@ -83,13 +93,20 @@ void Logging::output() {
      *}
      */
 
-    file.flush();
-    buffersToWirte = make_unique<BufferVector>();
+    // buffersToWirte->clear();
 
-    bufferA = make_unique<Buffer>();
-    if (!bufferB)
-      bufferB = make_unique<Buffer>();
+    bufferA = std::move(buffersToWirte->back());
+    buffersToWirte->pop_back();
+    bufferA->reset();
+    if (!bufferB) {
+      bufferB = std::move(buffersToWirte->back());
+      buffersToWirte->pop_back();
+      bufferB->reset();
+    }
+    buffersToWirte->clear();
+    file.flush();
   }
+  file.flush();
 }
 
 } // namespace AsyncLog

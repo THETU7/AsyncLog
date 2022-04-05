@@ -12,6 +12,7 @@
 #include <iomanip>
 
 namespace AsyncLog {
+
 LogFile::LogFile() : path("./"), basename("LOG") { initFile(); }
 
 LogFile::LogFile(const string &basename) : path("./"), basename("LOG") {

@@ -13,6 +13,7 @@ namespace AsyncLog {
  *void RUNLOGGING(Logging &ref) { ref.output(); }
  *
  */
+
 void LogStream::format(const string &str) {
   auto now = chrono::system_clock::now();
   time_t nowTime = chrono::system_clock::to_time_t(now);
@@ -21,10 +22,10 @@ void LogStream::format(const string &str) {
           .count() %
       100000;
   std::stringstream ss;
-  ss << getLevel() << " ";
-  ss << put_time(localtime(&nowTime), "%F %T") << "." << time_us;
-  ss << " " << fid << " ";
-  ss << str << " " << filename_ << ':' << line_ << '\n';
+  ss << put_time(localtime(&nowTime), "%F %T") << "." << time_us << '\t';
+  ss << getLevel();
+  ss << '\t' << fid << '\t';
+  ss << str << '\t' << filename_ << ':' << line_ << '\n';
   // buffer_.append(ss.str());
   logging_.append(ss.str());
 }

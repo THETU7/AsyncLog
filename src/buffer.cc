@@ -40,7 +40,7 @@ void buffer::append(const string &str) { append(str.data(), str.size()); }
 void buffer::append(const char *str, size_t len) {
   ensureWriteAbleSizes(len);
   std::copy(str, len + str, begintoWrite());
-  assert(len <= writeableSize());
+  assert((int)len <= writeableSize());
   writeIndex += len;
 }
 
@@ -56,14 +56,14 @@ void buffer::ensureWriteAbleSizes(size_t size) {
 string buffer::retrieveAllString() { return retrieveAsString(readableSize()); }
 
 string buffer::retrieveAsString(size_t len) {
-  assert(len <= readableSize());
+  assert((int)len <= readableSize());
   string re(peek(), len);
   retrieve(len);
   return re;
 }
 
 void buffer::retrieve(size_t len) {
-  assert(len <= readableSize());
+  assert((int)len <= readableSize());
 
   readIndex += len;
 
@@ -79,5 +79,7 @@ const char *buffer::findEOF(const char *begin) {
   assert(begin <= begintoWrite());
   return static_cast<const char *>(memchr(begin, '\n', begintoWrite() - begin));
 }
+
+const string buffer::outputToString() { return string(peek(), readableSize()); }
 
 } // namespace Buffer

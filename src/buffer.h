@@ -33,6 +33,7 @@ public:
   void append(const string &);
   void append(const char *, size_t len);
   void output(int fd);
+  const string outputToString();
   inline bool isEmpty() { return readIndex == writeIndex; }
   string retrieveAsString(size_t len);
   string retrieveAllString();

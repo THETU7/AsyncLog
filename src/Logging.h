@@ -34,13 +34,28 @@ class Logging : noncopyable {
 
 public:
   Logging();
+  ~Logging() {
+    /*
+     *    for (auto it = buffers_->begin(); it != buffers_->end(); ++it) {
+     *      cout << "out put buffer,size:" << (*it)->writedSize() << endl;
+     *      (*it)->outputByFile(file);
+     *    }
+     *
+     */
+    if (running_) {
+      running_ = false;
+      cond.notify_all();
+      thread_.join();
+    }
+  }
   void append(const string &);
-  void output();
   // inline void changeLevel(const LogLevel &lev) { level = lev; }
   void closeRun() { running_ = false; }
+  void output();
 
 private:
   void getTimeStr();
+  // void outputTofile(const vectorPtr &);
 
   //前端buffer
 private:
@@ -56,6 +71,7 @@ private:
   mutex mutex_{};
   condition_variable cond{};
   bool running_{true};
+  thread thread_;
 
   //格式化数据
   /*

@@ -10,8 +10,8 @@
 #ifndef LOGSTREAM_H
 #define LOGSTREAM_H
 
-#include "src/FixedBuffer.h"
 #include "src/Logging.h"
+#include "src/buffer.h"
 #include <thread>
 
 //#define LOGINFO OUTPUTLOG(__FILE__, __LINE__)
@@ -29,7 +29,9 @@ public:
     fid = pthread_self();
   }
   LogStream(const char *filename, int lines, LogLevel levels)
-      : filename_(filename), line_(lines), current_level(levels){};
+      : filename_(filename), line_(lines), current_level(levels) {
+    fid = pthread_self();
+  };
 
   self &operator<<(const string &str) {
     buffer_.append(str);
@@ -75,7 +77,7 @@ private:
   string filename_{};
   int line_{0};
   LogLevel current_level;
-  FixedBuffer<SMALLBUFFERSIZE> buffer_;
+  Buffer::buffer buffer_{SMALLBUFFERSIZE};
   static Logging logging_;
 };
 

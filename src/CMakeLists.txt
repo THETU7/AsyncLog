@@ -1,4 +1,4 @@
-set(SRC_SOURCE LogStream.cc Logging.cc LogFile.cc FixedBuffer.cc)
+set(SRC_SOURCE LogStream.cc buffer.cc Logging.cc LogFile.cc FixedBuffer.cc)
 
 
 add_library(AsyncLog ${SRC_SOURCE})

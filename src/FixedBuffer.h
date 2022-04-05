@@ -16,9 +16,11 @@
 #include <iostream>
 
 namespace AsyncLog {
+
 template <int SIZE> class FixedBuffer : noncopyable {
 public:
   FixedBuffer() : cur(buf_), len_(0) {}
+  ~FixedBuffer() {}
   void append(const char *buf, size_t len) {
     if (len == 0)
       return;
@@ -36,15 +38,31 @@ public:
   void output(char *buf, size_t len) {
     if (len < len_) {
       memcpy(buf, buf_, len);
+      cur -= len;
       len_ -= len;
     } else {
       memcpy(buf, buf_, len_);
+      cur = buf_;
       len_ = 0;
     }
   }
 
-  void outputByFile(LogFile &file) { file.append(buf_, cur - buf_); }
-  const string outputToString() { return string(buf_, len_); }
+  void reset() {
+    memset(buf_, 0, SIZE);
+    cur = buf_;
+    len_ = 0;
+  }
+
+  void outputByFile(LogFile &file) {
+    file.append(buf_, len_);
+    len_ = 0;
+    cur = buf_;
+  }
+  const string outputToString() {
+    len_ = 0;
+    cur = buf_;
+    return string(buf_, len_);
+  }
 
   inline size_t writedSize() { return len_; }
 

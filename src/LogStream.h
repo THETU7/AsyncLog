@@ -56,6 +56,46 @@ public:
     return *this;
   }
 
+  self &operator<<(int num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+
+  self &operator<<(float num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+
+  self &operator<<(short num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+
+  self &operator<<(unsigned int num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+
+  self &operator<<(long num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+
+  self &operator<<(unsigned long num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+  self &operator<<(unsigned long long num) {
+    buffer_.append(to_string(num));
+    return *this;
+  }
+
+  self &operator<<(const void *ptr) {
+    uintptr_t v = reinterpret_cast<uintptr_t>(ptr);
+    buffer_.append(to_string(v));
+    return *this;
+  }
+
   self &stream() { return *this; }
 
   void format(const string &str);

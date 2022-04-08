@@ -12,7 +12,7 @@
 
 #include "FixedBuffer.h"
 #include "LogFile.h"
-#include "src/noncopyable.h"
+#include "noncopyable.h"
 #include <condition_variable>
 #include <memory>
 #include <mutex>

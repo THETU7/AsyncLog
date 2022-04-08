@@ -1,4 +1,4 @@
-#include "src/LogStream.h"
+#include "LogStream.h"
 #include <cstdio>
 #include <iomanip>
 

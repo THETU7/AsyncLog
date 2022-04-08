@@ -10,8 +10,8 @@
 #ifndef FIXEDBUFFER_H
 #define FIXEDBUFFER_H
 
-#include "src/LogFile.h"
-#include "src/noncopyable.h"
+#include "LogFile.h"
+#include "noncopyable.h"
 #include <cstring>
 #include <iostream>
 

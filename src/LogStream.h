@@ -10,8 +10,8 @@
 #ifndef LOGSTREAM_H
 #define LOGSTREAM_H
 
-#include "src/Logging.h"
-#include "src/buffer.h"
+#include "Logging.h"
+#include "buffer.h"
 #include <cstdlib>
 #include <thread>
 

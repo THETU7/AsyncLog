@@ -10,7 +10,7 @@
 #ifndef ASYNCLOG_H
 #define ASYNCLOG_H
 
-#include "src/LogStream.h"
+#include "LogStream.h"
 
 #define LOGTARCE                                                               \
   if (AsyncLog::LogLevel::TARCE >= AsyncLog::LogStream::level)                 \

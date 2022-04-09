@@ -46,8 +46,8 @@ int main() {
    *t2.join();
    */
 
-  AsyncLog::LogStream::setOutput(AsyncLog::ASYNCLOGOUT);
-  std::thread t1(thr1);
+  // AsyncLog::LogStream::setOutput(AsyncLog::ASYNCLOGOUT);
+  std::thread t1(thr3);
   /*
    *  std::thread t2(thr2);
    *  std::thread t3(thr3);

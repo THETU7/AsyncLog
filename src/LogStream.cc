@@ -23,10 +23,34 @@ void LogStream::format(const string &str) {
           .count() %
       100000;
   std::stringstream ss;
+  if (g_output == defalutOutPutFunction) {
+    switch (current_level) {
+    case LogLevel::WARN:
+      ss << "\033[33m";
+      break;
+    case LogLevel::ERROR:
+      ss << "\033[31m";
+      break;
+    case LogLevel::FATAL:
+      ss << "\033[31m";
+    default:
+      break;
+    }
+  }
   ss << put_time(localtime(&nowTime), "%F %T") << "." << time_us << '\t';
   ss << getLevel();
   ss << '\t' << fid << '\t';
   ss << str << '\t' << filename_ << ':' << line_ << '\n';
+  if (g_output == defalutOutPutFunction) {
+    switch (current_level) {
+    case LogLevel::WARN:
+    case LogLevel::ERROR:
+    case LogLevel::FATAL:
+      ss << "\033[0m";
+    default:
+      break;
+    }
+  }
   // buffer_.append(ss.str());
   string strs = ss.str();
   g_output(strs.c_str(), strs.length());
@@ -60,7 +84,10 @@ OUTPUTFUN LogStream::g_output = defalutOutPutFunction;
 FLUSHFUN LogStream::g_flush = defalutFlushFunction;
 
 void defalutOutPutFunction(const char *msg, size_t len) {
+
   size_t n = fwrite(msg, 1, len, stdout);
+
+  // cout << "\033[33m" << msg << "\033[0m";
   (void)n;
 }
 

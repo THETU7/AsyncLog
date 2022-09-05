@@ -64,7 +64,7 @@ void Logging::append(const char *msg, size_t len) {
   if (len <= current_->availbe())
     current_->append(msg, len);
   else {
-    buffers_->push_back(std::move(current_));
+    buffers_->emplace_back(std::move(current_));
 
     if (nextBuffer.get()) {
       current_ = std::move(nextBuffer);
@@ -72,7 +72,7 @@ void Logging::append(const char *msg, size_t len) {
       current_.reset(new Buffer);
     }
     current_->append(msg, len);
-    // cout << str << endl;
+    // cout << msg << endl;
     // lcok.unlock();
     cond.notify_one();
   }
@@ -95,7 +95,7 @@ void Logging::output() {
         continue;
       }
 
-      buffers_->push_back(std::move(current_));
+      buffers_->emplace_back(std::move(current_));
       current_ = std::move(bufferA);
       buffersToWirte.swap(buffers_);
       if (!nextBuffer)
@@ -134,11 +134,8 @@ void Logging::output() {
 }
 
 void ASYNCLOGOUT(const char *msg, size_t len) {
-  if (!GLOABLASYNCLOG)
-    GLOABLASYNCLOG.reset(new Logging);
-  GLOABLASYNCLOG->append(msg, len);
+  static Logging GLOABLASYNCLOG;
+  GLOABLASYNCLOG.append(msg, len);
 }
-
-unique_ptr<Logging> GLOABLASYNCLOG = nullptr;
 
 } // namespace AsyncLog

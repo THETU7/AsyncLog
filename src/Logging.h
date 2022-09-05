@@ -25,7 +25,7 @@ namespace AsyncLog {
 enum class LogLevel { TARCE, DEBUG, INFO, WARN, ERROR, FATAL, NUM_LOG_LEVELS };
 
 class Logging : noncopyable {
-  const static int bufferSize = 1024 * 10;
+  const static int bufferSize = 1024 * 64;
 
   using Buffer = FixedBuffer<bufferSize>;
   using BufferPtr = unique_ptr<Buffer>;
@@ -82,8 +82,6 @@ private:
    *  LogLevel level{LogLevel::INFO};
    */
 };
-
-extern unique_ptr<Logging> GLOABLASYNCLOG;
 
 void ASYNCLOGOUT(const char *msg, size_t len);
 

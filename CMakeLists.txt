@@ -4,8 +4,7 @@ PROJECT(asyncLoger VERSION 0.1)
 
 #设置为debug
 #set(CMAKE_BUILD_TYPE "Debug")
-
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++17 -O3")
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_subdirectory(src)
